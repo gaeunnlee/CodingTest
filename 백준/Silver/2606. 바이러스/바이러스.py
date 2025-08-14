@@ -2,8 +2,8 @@ from collections import deque
 
 n = int(input())  # 컴퓨터의 수
 m = int(input())  # 네트워크 상에서 직접 연결되어 있는 컴퓨터 쌍의 수
-graph = [[] for _ in range(n + 2)]
-visited = [False for _ in range(n + 2)]
+graph = [[] for _ in range(n + 1)]
+visited = [False] * (n + 1)
 
 for _ in range(m):
     a, b = map(int, input().split(" "))
@@ -13,22 +13,17 @@ for _ in range(m):
 
 def bfs(start, graph, visited):
     result = 0
-    queue = deque()
+    queue = deque([start])
     visited[start] = True
-    queue.append(start)
 
     while queue:
         node = queue.popleft()
-        visited[node] = True
-
-        if node != 1:
-            result += 1
-
         for v in graph[node]:
-            if visited[v] or v in queue:
+            if visited[v]:
                 continue
+            visited[v] = True
             queue.append(v)
-
+            result += 1
     return result
 
 
