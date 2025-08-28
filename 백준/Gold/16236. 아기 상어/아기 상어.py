@@ -29,28 +29,29 @@ def bfs(graph, current_position, time):
             ]
         ]
     )
-    fishes = []
 
     while queue:
-        [y, x], t = queue.popleft()
-        for i in range(4):
-            ny, nx = y + dy[i], x + dx[i]
-            if (
-                0 <= ny < n
-                and 0 <= nx < n
-                and graph[ny][nx] <= shark_size
-                and not visited[ny][nx]
-            ):  # 이동
-                if 0 < graph[ny][nx] < shark_size:
-                    fishes.append((t + 1, ny, nx))
-                visited[ny][nx] = True
-                queue.append([[ny, nx], t + 1])
-    if fishes:
-        fishes.sort()
-        eaten_fish = fishes[0]
-        return eaten_fish
-    else:
-        return None
+        level_size = len(queue)
+        fishes = []
+        for _ in range(level_size):
+            [y, x], t = queue.popleft()
+            for i in range(4):
+                ny, nx = y + dy[i], x + dx[i]
+                if (
+                    0 <= ny < n
+                    and 0 <= nx < n
+                    and graph[ny][nx] <= shark_size
+                    and not visited[ny][nx]
+                ):  # 이동
+                    if 0 < graph[ny][nx] < shark_size:
+                        fishes.append((t + 1, ny, nx))
+                    visited[ny][nx] = True
+                    queue.append([[ny, nx], t + 1])
+        if fishes:
+            fishes.sort()
+            eaten_fish = fishes[0]
+            return eaten_fish
+    return None
 
 
 while True:
