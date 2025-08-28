@@ -20,9 +20,6 @@ for y in range(n):
 
 
 def bfs(graph, current_position, time):
-    global shark_size
-    global eaten_fish_n
-    global total_time
     visited = [[False] * n for _ in range(n)]
     queue = deque(
         [
@@ -51,17 +48,23 @@ def bfs(graph, current_position, time):
     if fishes:
         fishes.sort()
         eaten_fish = fishes[0]
-        (et, ey, ex) = eaten_fish
-        eaten_fish_n += 1
-        if shark_size == eaten_fish_n:
-            shark_size += 1
-            eaten_fish_n = 0
-        total_time += et
-        graph[ey][ex] = 0
-        bfs(graph, [ey, ex], 0)
-        return
+        return eaten_fish
     else:
-        return
+        return None
+
+
+while True:
+    result = bfs(graph, current_position, 0)
+    if result is None:
+        break
+    (et, ey, ex) = result
+    eaten_fish_n += 1
+    if shark_size == eaten_fish_n:
+        shark_size += 1
+        eaten_fish_n = 0
+    total_time += et
+    graph[ey][ex] = 0
+    current_position = [ey, ex]
 
 
 bfs(graph, current_position, 0)
