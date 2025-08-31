@@ -1,15 +1,17 @@
-def solution(n):
-    dp = [0, 0]
-    if n > 1:
-        for i in range(2, n + 1):
-            arr = []
-            if i % 3 == 0:
-                arr.append(dp[i // 3])
-            if i % 2 == 0:
-                arr.append(dp[i // 2])
-            arr.append(dp[i - 1])
-            dp.append(min(arr) + 1)
+def sol(n):
+    if n in dp.keys():
+        return dp[n]
+    if n % 3 == 0 and n % 2 == 0:
+        dp[n] = min(sol(n // 3) + 1, sol(n // 2) + 1)
+    elif n % 3 == 0:
+        dp[n] = min(sol(n // 3) + 1, sol(n - 1) + 1)
+    elif n % 2 == 0:
+        dp[n] = min(sol(n // 2) + 1, sol(n - 1) + 1)
+    else:
+        dp[n] = sol(n - 1) + 1
+
     return dp[n]
 
 
-print(solution(int(input())))
+dp = {1: 0}
+print(sol(int(input())))
