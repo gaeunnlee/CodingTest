@@ -1,18 +1,10 @@
 def solution(numbers, target):
-    answer = 0
-
-    def dfs(i, result, answer):
+    def dfs(i, result):
         n = numbers[i]
 
         if i == len(numbers) - 1:
-            if result - n == target or result + n == target:
-                answer += 1
+            return 1 if result - n == target or result + n == target else 0
+        else:
+            return dfs(i + 1, result - n) + dfs(i + 1, result + n)
 
-        elif i < len(numbers) - 1:
-            answer = dfs(i + 1, result - n, answer) + dfs(i + 1, result + n, answer)
-
-        return answer
-
-    answer = dfs(0, 0, answer)
-
-    return answer
+    return dfs(0, 0)
