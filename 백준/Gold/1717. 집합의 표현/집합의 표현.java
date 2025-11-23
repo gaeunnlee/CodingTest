@@ -1,15 +1,22 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 	static int[] nodes;
 	static int[] ranks;
 
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
 
-		int n = sc.nextInt(); int m = sc.nextInt();
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
 
-		nodes = new int[n+1]; ranks = new int[n+1];
+		nodes = new int[n + 1];
+		ranks = new int[n + 1];
 
 		for (int i = 0; i <= n; i++) {
 			nodes[i] = i;
@@ -17,18 +24,22 @@ public class Main {
 		}
 
 		for (int i = 0; i < m; i++) {
-			int operation = sc.nextInt();
-			int a = sc.nextInt(); int b = sc.nextInt();
+			st = new StringTokenizer(br.readLine());
+			int operation = Integer.parseInt(st.nextToken());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
 
 			switch (operation) {
 			case 0:
 				union(a, b);
 				break;
 			case 1:
-				hasSameRoot(a, b);
+				sb.append(findRoot(a) == findRoot(b) ? "YES\n" : "NO\n");
 				break;
 			}
 		}
+		
+		System.out.println(sb.toString());
 
 	}
 
@@ -44,10 +55,6 @@ public class Main {
 			int targetNode = ranks[rootA] > ranks[rootB] ? rootB : rootA;
 			nodes[targetNode] = newRoot;
 		}
-	}
-
-	static void hasSameRoot(int a, int b) {
-		System.out.println(findRoot(nodes[a]) == findRoot(nodes[b]) ? "YES" : "NO");
 	}
 
 	static int findRoot(int node) {
