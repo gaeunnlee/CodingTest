@@ -4,13 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 class Solution {
-	static List<String> perm = new ArrayList<>();
 	static char[] nArr;
 	static Set<Integer> primeSet;
-
-	public static void main(String[] args) {
-		System.out.println(solution("011"));
-	}
 
 	public static int solution(String numbers) {
 		nArr = numbers.toCharArray();
