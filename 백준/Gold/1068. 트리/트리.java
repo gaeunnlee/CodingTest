@@ -1,68 +1,54 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
-	static List<Integer>[] tree;
-	static int[] rootArr;
-	static int n;
-	static int answer;
-	static int rootNode;
+    static List<Integer>[] tree;
+    static int target;
+    static int leafCount = 0;
 
-	public static void main(String[] args) throws IOException {
-		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-		n = Integer.parseInt(bf.readLine());
-		tree = new ArrayList[n];
-		rootArr = new int[n];
+        int n = Integer.parseInt(br.readLine());
+        tree = new List[n];
+        for (int i = 0; i < n; i++) tree[i] = new ArrayList<>();
 
-		st = new StringTokenizer(bf.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        int root = -1;
 
-		for (int i = 0; i < n; i++)
-			tree[i] = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            int p = Integer.parseInt(st.nextToken());
+            if (p == -1) {
+                root = i;
+            } else {
+                tree[p].add(i);
+            }
+        }
 
-		for (int i = 0; i < n; i++) {
-			int root = Integer.parseInt(st.nextToken());
-			rootArr[i] = root;
+        target = Integer.parseInt(br.readLine());
 
-			if (root == -1) {
-				rootNode = i;
-				continue;
-			}
+        // 루트가 target인 경우 무조건 0
+        if (root == target) {
+            System.out.println(0);
+            return;
+        }
 
-			tree[root].add(i);
-		}
+        // 루트부터 트리 순회하며 리프 탐색 (target 노드는 제외)
+        dfs(root);
+        System.out.println(leafCount);
+    }
 
-		int target = Integer.parseInt(bf.readLine());
+    static void dfs(int node) {
+        if (node == target) return;
 
-		if (target == rootNode) {
-			System.out.println(0);
-			return;
-		}
+        int validChild = 0;
+        for (int next : tree[node]) {
+            if (next == target) continue;
+            validChild++;
+            dfs(next);
+        }
 
-		tree[target] = null;
-
-		tree[rootArr[target]].remove(Integer.valueOf(target));
-
-		dfs(rootNode);
-
-		System.out.println(answer);
-
-	}
-
-	static void dfs(int current) {
-		if (tree[current].isEmpty()) {
-			answer++;
-			return;
-		}
-		for (int next : tree[current])
-			dfs(next);
-
-	}
-
+        if (validChild == 0) leafCount++;
+    }
 }
