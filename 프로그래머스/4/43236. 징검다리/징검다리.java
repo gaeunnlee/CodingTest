@@ -3,38 +3,39 @@ import java.util.*;
 class Solution {
     public int solution(int distance, int[] rocks, int n) {
         int answer = 0;
-
+        
+        Arrays.sort(rocks);
+        
         int min = 1;
         int max = distance;
-
-        Arrays.sort(rocks);
-
+        
         while (min <= max) {
-            int mid = (min + max) / 2;
-
-            int removeCnt = 0;
+            int mid = min + (max - min) / 2;
             int prev = 0;
-
-            for (int r : rocks) {
-                if (r - prev < mid) {   
+            int removeCnt = 0;
+            
+            for (int rock: rocks) {
+                if (rock - prev < mid) {
                     removeCnt++;
                 } else {
-                    prev = r;
+                    prev = rock;
                 }
             }
-
+            
             if (distance - prev < mid) {
                 removeCnt++;
             }
-
+            
             if (removeCnt > n) {
                 max = mid - 1;
             } else {
                 answer = mid;
                 min = mid + 1;
             }
+            
+           
+            
         }
-
-        return answer;
+         return answer;
     }
 }
