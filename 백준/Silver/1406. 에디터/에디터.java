@@ -1,47 +1,36 @@
 import java.util.*;
 import java.io.*;
 
-class Main {
-    public static void main(String[] args) throws IOException {
+public class Main {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        Stack<String> left = new Stack<>();
-        Stack<String> right = new Stack<>();
 
-        String input = br.readLine();
-        for (int i = 0; i < input.length(); i++) {
-            left.push(input.charAt(i) + "");
-        }
+        String s = br.readLine();
+        int m = Integer.parseInt(br.readLine());
 
-        int cmdCnt = Integer.parseInt(br.readLine());
+        ArrayDeque<Character> left = new ArrayDeque<>();
+        ArrayDeque<Character> right = new ArrayDeque<>();
 
-        for (int i = 0; i < cmdCnt; i++){
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            String cmd = st.nextToken();
+        for (int i = 0; i < s.length(); i++) left.addLast(s.charAt(i));
 
-            if ("L".equals(cmd) && !left.isEmpty()) {
-                right.push(left.pop());
-            } else if ("D".equals(cmd) && !right.isEmpty()) {
-                left.push(right.pop());
-            } else if ("B".equals(cmd) && !left.isEmpty()) {
-                left.pop();
-            } else if ("P".equals(cmd)) {
-                left.add(st.nextToken());
+        for (int i = 0; i < m; i++) {
+            String line = br.readLine();
+            char cmd = line.charAt(0);
+
+            if (cmd == 'L') {
+                if (!left.isEmpty()) right.addLast(left.removeLast());
+            } else if (cmd == 'D') {
+                if (!right.isEmpty()) left.addLast(right.removeLast());
+            } else if (cmd == 'B') {
+                if (!left.isEmpty()) left.removeLast();
+            } else { // 'P'
+                left.addLast(line.charAt(2));
             }
         }
 
-        StringBuilder sb = new StringBuilder();
-        while (!left.isEmpty()) {
-            sb.append(left.pop());
-        }
-
-        sb.reverse();
-
-        while (!right.isEmpty()) {
-            sb.append(right.pop());
-        }
-
-        System.out.println(sb);
-
-
+        StringBuilder out = new StringBuilder(left.size() + right.size());
+        for (char c : left) out.append(c);
+        while (!right.isEmpty()) out.append(right.removeLast());
+        System.out.print(out);
     }
 }
