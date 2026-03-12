@@ -1,92 +1,68 @@
 import java.util.*;
 
 class Solution {
-    static int[] answer = {-1};
-    static int maxDiff = Integer.MIN_VALUE;
+    
+    static int maxDiff = -1;
+    static int[] finalLionArr = new int[11];
     
     public int[] solution(int n, int[] info) {
-        answer = new int[]{-1};
-        maxDiff = Integer.MIN_VALUE;
+        backtrack(n, 0, new int[11], info);
         
-        int[] lion = new int[11];
-        
-        // index = 0 -> 10점부터 백트래킹
-        backtracking(0, lion, 0, n, info);
-        
-        return answer;
+        if (maxDiff <= 0) return new int[]{-1};
+        return finalLionArr;
     }
     
-    static void backtracking(int index, int[] lion, int lionCnt, int totalCnt, int[] apeach) {
-        int currentScore = 10 - index;
-        
-        // 마지막 점수(0점): 남은 화살 전부 0점에 넣음
-        if (currentScore == 0) {
-            int remainCnt = totalCnt - lionCnt;
-            lion[10] = remainCnt;
-            
-            int result = calculateDiff(lion, apeach);
-            
-            if (result > 0) {
-                if (result > maxDiff) {
-                    maxDiff = result;
-                    answer = Arrays.copyOf(lion, 11);
-                } else if (result == maxDiff && compareAndUpdateNewResult(lion)) {
-                    answer = Arrays.copyOf(lion, 11);
-                }
+    static void backtrack(int restCnt, int index, int[] lionArr, int[] peachArr) {
+        if (index == 11 || restCnt == 0) {
+            if (index == 11 && restCnt > 0) {
+                lionArr[10] += restCnt;
             }
             
-            lion[10] = 0;
+            int diff = getDiff(lionArr, peachArr);
+            if (diff > maxDiff) {
+                maxDiff = diff;
+                finalLionArr = Arrays.copyOf(lionArr, 11);
+            } else if (diff == maxDiff && isBetter(lionArr, finalLionArr)) {
+                finalLionArr = Arrays.copyOf(lionArr, 11);
+            }
+            
+            if (index == 11 && restCnt > 0) {
+                lionArr[10] -= restCnt;
+            }
             return;
         }
         
-        // (A) 어피치보다 1개 더 쏘거나, (B) 아예 안 쏘기
-        int lionTargetCnt = apeach[index] + 1;
-        int remainCnt = totalCnt - lionCnt;
-        
-        // (A)
-        if (lionTargetCnt <= remainCnt) {
-            lion[index] = lionTargetCnt;
-            backtracking(index + 1, lion, lionCnt + lionTargetCnt, totalCnt, apeach);
-            lion[index] = 0;
+        // 1. 안 쏘는 경우
+        backtrack(restCnt, index + 1, lionArr, peachArr);
+
+        // 2. 피치보다 1발 더 쏘는 경우
+        int need = peachArr[index] + 1;
+        if (restCnt >= need) {
+            lionArr[index] = need;
+            backtrack(restCnt - need, index + 1, lionArr, peachArr);
+            lionArr[index] = 0;
         }
-        
-        // (B)
-        lion[index] = 0;
-        backtracking(index + 1, lion, lionCnt, totalCnt, apeach);
-        
     }
     
-    static int calculateDiff(int[] lion, int[] apeach) {
-        int lionScore = 0;
-        int apeachScore = 0;
+    static int getDiff(int[] lionArr, int[] peachArr) {
+        int lionSum = 0;
+        int peachSum = 0;
         
         for (int i = 0; i <= 10; i++) {
-            int lionCnt = lion[i];
-            int apeachCnt = apeach[i];
             int score = 10 - i;
-        
-            if (lionCnt == 0 && apeachCnt == 0) continue;
-            
-            if (lionCnt > apeachCnt) {
-                lionScore += score;
-            } else {
-                apeachScore += score;
+            if (lionArr[i] > peachArr[i]) {
+                lionSum += score;
+            } else if (peachArr[i] > 0) {
+                peachSum += score;
             }
         }
         
-        return lionScore - apeachScore;
-        
+        return lionSum - peachSum;
     }
     
-    
-    // 가장 낮은 점수를 더 많이 맞힌 경우
-   static boolean compareAndUpdateNewResult(int[] newResult) {
-        // answer가 -1인 경우 새 결과로 업데이트
-        if (answer.length == 1 && answer[0] == -1) return true;
-
+    static boolean isBetter(int[] a, int[] b) {
         for (int i = 10; i >= 0; i--) {
-            if (answer[i] == newResult[i]) continue;
-            return answer[i] < newResult[i];
+            if (a[i] != b[i]) return a[i] > b[i];
         }
         return false;
     }
