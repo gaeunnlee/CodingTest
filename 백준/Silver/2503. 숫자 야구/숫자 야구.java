@@ -1,72 +1,70 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
-public class Main {
+class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+        StringTokenizer st;
+        
         int n = Integer.parseInt(br.readLine());
-        int[][] hints = new int[n][3];
-
-        for (int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            hints[i][0] = Integer.parseInt(st.nextToken()); // 질문 숫자
-            hints[i][1] = Integer.parseInt(st.nextToken()); // strike
-            hints[i][2] = Integer.parseInt(st.nextToken()); // ball
-        }
-
         int answer = 0;
-
+        
+        String[][] hints = new String[n][3];
+        
+        for (int i = 0; i < n; i ++) {
+            st = new StringTokenizer(br.readLine());
+            hints[i][0] = st.nextToken();
+            hints[i][1] = st.nextToken();
+            hints[i][2] = st.nextToken();
+        }
+        
         for (int num = 123; num <= 987; num++) {
-            String candidate = String.valueOf(num);
-
-            // 0 포함 불가
-            if (candidate.charAt(0) == '0' || candidate.charAt(1) == '0' || candidate.charAt(2) == '0') {
-                continue;
-            }
-
-            // 중복 숫자 불가
-            if (candidate.charAt(0) == candidate.charAt(1) ||
-                    candidate.charAt(1) == candidate.charAt(2) ||
-                    candidate.charAt(0) == candidate.charAt(2)) {
-                continue;
-            }
-
+            
+            String str = String.valueOf(num);
+            if (str.charAt(0) == '0' || str.charAt(1) == '0' || str.charAt(2) == '0') continue;
+            
+            if (str.charAt(0) == str.charAt(1) || str.charAt(1) == str.charAt(2) || str.charAt(0) == str.charAt(2)) continue;
             boolean possible = true;
-
-            for (int i = 0; i < n; i++) {
-                String target = String.valueOf(hints[i][0]);
-
+            
+            for (String[] hint : hints) {
+                
                 int strike = 0;
                 int ball = 0;
-
-                for (int j = 0; j < 3; j++) {
-                    if (candidate.charAt(j) == target.charAt(j)) {
-                        strike++;
-                    }
+                
+                for (int i = 0; i < 3; i ++) {
+                    char c = hint[0].charAt(i);
+                    
+                    if (c == str.charAt(i)) strike++;
                 }
-
-                for (int j = 0; j < 3; j++) {
-                    for (int k = 0; k < 3; k++) {
-                        if (j != k && candidate.charAt(j) == target.charAt(k)) {
+                
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        char c = str.charAt(i);
+                        if (c == hint[0].charAt(j) && i != j) {
                             ball++;
                         }
                     }
                 }
-
-                if (strike != hints[i][1] || ball != hints[i][2]) {
+              
+                if (strike != Integer.parseInt(hint[1]) || ball != Integer.parseInt(hint[2])) {
                     possible = false;
                     break;
                 }
+                
             }
-
-            if (possible) {
-                answer++;
-            }   
+            
+              
+            
+            
+            if (!possible) continue;
+            
+            
+            answer++;
+            
         }
-
+        
         System.out.println(answer);
+        
+        
     }
 }
