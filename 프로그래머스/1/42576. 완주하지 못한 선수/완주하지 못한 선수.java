@@ -1,26 +1,26 @@
-import java.util.HashMap;
+import java.util.*;
 
 class Solution {
     public String solution(String[] participant, String[] completion) {
-		 	HashMap<String, Integer> p = new HashMap<>();
-		 	StringBuilder sb = new StringBuilder();
-		 	
-		 	for (String name: participant) {
-		 		p.put(name, p.getOrDefault(name, 0) + 1);
-		 	}
-		 	
-		 	for (String name: completion) {
-		 		int size = p.get(name);
-		 		if (size == 1) p.remove(name);
-		 		else p.put(name, p.get(name) - 1);
-		 	}
-
-
-		 	for (String key : p.keySet()) {
-	            sb.append(key);
-		 	}
-
-		 	
-	        return sb.toString();
+        String answer = "";
+        
+        HashMap<String, Integer> pMap = new HashMap<>();
+        
+        for (String p: participant) {
+            pMap.put(p, pMap.getOrDefault(p, 0) + 1);
+        }
+        
+        for (String c: completion) {
+            pMap.put(c, pMap.getOrDefault(c, 0) - 1);
+            if (pMap.get(c) == 0) {
+                pMap.remove(c);
+            }
+        }        
+        
+        for (String p: pMap.keySet()) {
+            return p;
+        }
+        
+        return answer;
     }
 }
