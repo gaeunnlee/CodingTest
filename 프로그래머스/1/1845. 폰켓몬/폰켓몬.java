@@ -10,8 +10,8 @@ class Solution {
         
         int k = nums.length / 2;
         
-        int tSize = set.size();
+        return set.size() >= k ? k : set.size();
         
-        return tSize >= k ? k : tSize; 
+        
     }
 }
